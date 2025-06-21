@@ -1,6 +1,6 @@
 # Data Visualization and Reproducible Research
 
-> Firstname Lastname. 
+> Katelyn Bailey
 
 
 The following is a sample of products created during the _"Data Visualization and Reproducible Research"_ course.
@@ -8,36 +8,30 @@ The following is a sample of products created during the _"Data Visualization an
 
 ## Project 01
 
-In the `project_01/` folder you can find... _[add short description of your revised project here]_
-
+In the `project_01/` folder, you can find my first mini project, where I explored temporal patterns in U.S. birth data from 2000 to 2014. The visualizations provide insights into births by days on a weekly, monthly, and yearly level, as well as seasonal patterns. Exploratory visualizations included bar charts and a stacked bar chart of 'Total Births by Day of the Week,' 'Total Births by Month,' and 'Proportion of Births on Days of the Week by Month,' respectively. Additionally, I examined 'Daily Births Over Time,' 'Smoothed Time Trends of Daily Births by Year,' and 'Births by Month and Day of the Week' through scatterplots and a dot matrix.  
+  
 **Sample data visualization:** 
+<img src="figures/births_dot_matrix.png" width="80%" height="80%">
 
-_[include your favorite visualization from this project here]_
-<img src="https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/figures/echarts.png" width="70%" height="70%">
-
+All visualizations, full code, and the report can be found in the 'project_01/' folder. 
 
 ## Project 02
 
-In this project, I explored ... _[short description of your revised project goes here]_ Find the code and report in the `project_02/` folder.
+In this mini project, I explored the FIFA18 dataset, where I looked at patterns in how age, potential, and physical traits influence player ratings, while also highlighting national trends in player distribution across the world. I used an interactive scatterplot, spatial maps of the world, and a model based coefficient graph to visualize any insights. 
 
 **Sample data visualization:** 
+<img src="figures/fifa_country_rating.png" width="80%" height="80%">
 
-_[include your favorite visualization from this project here]_
-<img src="https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/figures/fl_higher_ed.png" width="80%" height="80%">
-
-(you can place your figures in the `figures/` folder and use the `![](path_to_picture)` option to add the pictures here)
-
+All visualizations, full code, and the report can be found in the 'project_02/' folder. 
 
 ## Project 03
 
-In this project, I explored ... _[short description of the data visualizations you for this part of the project produced goes here]_
+In this project, I visualized weather data in Tampa, FL during 2022 through faceted histograms and density plots, ridges, and a heatmap. I looked at temporal relationships with temperatures and precipitation. Then, I used histograms, boxplots, scatterplots, and a bubble chart to visualize cement data. I explored comprehensive strength of concrete in relation to age, water, and cement contents. 
 
 **Sample data visualization:** 
+<img src="figures/cement_plot.png" width="80%" height="80%">
 
-_[include your favorite visualization from this project here]_
-<img src="https://raw.githubusercontent.com/aalhamadani/dataviz_final_project/main/figures/concrete_density.png" width="80%" height="80%">
-
+All visualizations, full code, and the report can be found in the 'project_02/' folder. 
 
 ### Moving Forward
-
-_Please add here a short reflection on what you learned and what you plan to continue exploring in terms of data visualization, data storytelling, reproducible research, and/or related topics._
+Throughout this course, I learned that even simple plots, when implemented thoughtfully, can tell meaningful stories. Going forward, I want to continue exploring how to design reproducible data workflows and apply storytelling techniques to better communicate findings to both technical and non-technical audiences. I especially enjoyed learning about the different types of data visualizations and how to use aesthetics — not just to make charts prettier, but to present data more meaningfully. Learning about Git and version control was definitely valuable, and it's a skill I’d like to continue building as I grow more confident in collaborative, code-based projects. 
