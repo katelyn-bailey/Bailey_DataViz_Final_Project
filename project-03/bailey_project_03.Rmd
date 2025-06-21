@@ -50,7 +50,7 @@ ggplot(tpa, aes(x = max_temp, fill = month)) +
   strip.text = element_text(size = 13),  legend.position = "none", 
   panel.border = element_rect(color = "gray30", fill = NA, size = 2), panel.spacing = unit(0.5, "lines"),
   axis.text.x = element_text(size = 14), axis.text.y = element_text(size = 14), 
-  axis.title.x = element_text(size =18), axis.title.y = element_text(size = 18))
+  axis.title.x = element_text(size = 18), axis.title.y = element_text(size = 18))
 
 ggsave("tpa_max_temps_facet.png")
 ```
@@ -157,7 +157,8 @@ Concrete compressive strength | MPa, megapascals
 Below we read the `.csv` file using `readr::read_csv()` (the `readr` package is part of the `tidyverse`)
 
 ```{r}
-concrete <- read_csv("~/Downloads/concrete.csv")
+library(here)
+concrete <- read_csv(here("data", "concrete.csv"))
 ```
 
 

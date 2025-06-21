@@ -16,8 +16,9 @@ library(ggplot2)
 library(plotly)
 library(leaflet)
 library(broom)
+library(here)
 
-fifa <- read_csv("fifa18.csv")
+fifa <- read_csv(here("data", "fifa18.csv"))
 
 head(fifa)
 sum(is.na(fifa))
@@ -54,7 +55,7 @@ htmlwidgets::saveWidget(interactive_plot, "fancy_fifa_plot.html")
 
 ```{r}
 library(sf)
-world_shapes <- read_sf("ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+world_shapes <- read_sf(here("data", "ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp"))
 world_shapes <- filter(world_shapes, ISO_A3 != "ATA")
 world_shapes
 
@@ -92,6 +93,8 @@ fifa_counts_map <- ggplot() + geom_sf(data = world_fifa1, aes(fill = count), col
   theme_void() + theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5, face = "bold"))
 fifa_counts_map
 
+ggsave("fifa_country_counts.png")
+
 country_overall <- fifa %>% group_by(nationality) %>% summarise(avg_overall = mean(overall))
 world_fifa2 <- world_shapes %>% left_join(country_overall, by = c("NAME" = "nationality"))
 
@@ -101,6 +104,8 @@ fifa_overall_map <- ggplot() + geom_sf(data = world_fifa2, aes(fill = avg_overal
        caption = "Source: FIFA18 player data, Shapefile: Natural Earth") +
   theme_void() + theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5, face = "bold"))
 fifa_overall_map
+
+ggsave("fifa_country_rating.png")
 ```
 
 ```{r}
@@ -114,6 +119,8 @@ ggplot(model_df, aes(x = reorder(term, estimate), y = estimate)) +
   labs(title = "Linear Model Coefficients for Player Overall Rating",
        x = "Model Term", y = "Estimate") +
   coord_flip()
+
+ggsave("fifa_lm_coef_rating.png")
 ```
 
 > An increase in any of these variables is associated with an increase in overall rating. This shows that age and potential are a strong indicator of overall rating. Older players have higher overall ratings. A one point increase in potential will increase the overall rating by 0.89 points. Sprint speed and strength have much smaller effects on the overall rating. This shows their expected potential and the experience of a player is more important than their physical abilities like strength and speed.  

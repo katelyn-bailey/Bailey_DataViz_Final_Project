@@ -14,8 +14,9 @@ library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+library(here)
 
-birth <- read_csv("us_births_00_14.csv")
+birth <- read_csv(here("data", "us_births_00_14.csv"))
 
 # check head, missing values, and data structure 
 head(birth)
@@ -51,6 +52,8 @@ birth %>% group_by(day_of_week) %>% summarise(total_births = sum(births)) %>%
   ggplot(aes(x = day, y = total_births/1000000, fill = day)) + geom_col() + 
   labs(title = "Total Births by Day of the Week", x = "", y = "Total Births (Millions)", caption = "Source: US births 2000-2014") +
   theme_minimal() + theme(legend.position = "none")
+
+ggsave("births_dow.png")
 ```
 
 > Suday is the least popular day, with Saturday-Monday being less than Tuesday-Friday, and Tuesday being the most popular day. 
@@ -61,6 +64,8 @@ birth %>% group_by(month) %>% summarise(total_births = sum(births)) %>%
   ggplot(aes(x = month, y = total_births/1000000, fill = month)) + geom_col() + 
   labs(title = "Total Births by Month", x = "", y = "Total Births (Millions)", caption = "Source: US births 2000-2014") +
   theme_minimal() + theme(legend.position = "none")
+
+ggsave("births_month.png")
 ```
 
 > A decrease in births in early spring and an increase in births in late summer/early fall. Low: Feburary; High: August 
@@ -72,6 +77,8 @@ birth %>% group_by(month, day_of_week) %>% summarise(total_births = sum(births))
   ggplot(aes(x = month, y = total_births/1000000, fill = day_of_week)) + geom_bar(stat = "identity", position = "fill") + 
   labs(title = "Proportion of Births on Days of the Week by Month", y = "", x = "", fill = "", caption = "Source: US births 2000-2014") + 
   theme_minimal() + theme(legend.position = "right")
+
+ggsave("births_proportion_dow_month.png")
 ```
 
 ```{r}
@@ -79,6 +86,8 @@ ggplot(birth, aes(x = date, y = births)) +
   geom_point(color = "hotpink", alpha = .2) +
   labs(title = "Daily Births Over Time", x = "", y = "", caption = "Source: US births 2000-2014") +
   theme_minimal()
+
+ggsave("births_over_time.png")
 ```
 
 ```{r}
@@ -88,6 +97,8 @@ birth %>% mutate(day_of_year = yday(date)) %>% group_by(date, year, day_of_year)
   geom_smooth(method = "loess", span = 0.1, color = "hotpink", se = FALSE) +
   facet_wrap(~ year) + labs(title = "Smoothed Time Trends of Daily Births by Year", caption = "Source: US births 2000-2014",
     x = "", y = "") + theme_minimal() 
+
+ggsave("births_yearly_facets.png")
 ```
 
 ```{r}
@@ -101,6 +112,8 @@ birth %>% group_by(month, day_of_week) %>% summarise(total_births = sum(births),
                        guide = guide_colorbar(reverse = TRUE,  barheight = unit(125, "pt"))) + 
   labs(title = "Births by Month and Day of the Week", subtitle = "Colored and Sized by Total Births", x = "", y = "") +
   theme_minimal() + theme(legend.position = "right", legend.box = "horizontal")
+
+ggsave("births_dot_matrix.png")
 ```
 
 > Least popular month and day combination being Sundays in February and the most favorable combinations being Tuesdays-Thursdays in July-September. 
