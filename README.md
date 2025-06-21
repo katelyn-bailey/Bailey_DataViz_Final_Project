@@ -31,7 +31,7 @@ In this project, I visualized weather data in Tampa, FL during 2022 through face
 **Sample data visualization:** 
 <img src="figures/cement_plot.png" width="80%" height="80%">
 
-All visualizations, full code, and the report can be found in the 'project_02/' folder. 
+All visualizations, full code, and the report can be found in the 'project_03/' folder. 
 
 ### Moving Forward
 Throughout this course, I learned that even simple plots, when implemented thoughtfully, can tell meaningful stories. Going forward, I want to continue exploring how to design reproducible data workflows and apply storytelling techniques to better communicate findings to both technical and non-technical audiences. I especially enjoyed learning about the different types of data visualizations and how to use aesthetics — not just to make charts prettier, but to present data more meaningfully. Learning about Git and version control was definitely valuable, and it's a skill I’d like to continue building as I grow more confident in collaborative, code-based projects. 
