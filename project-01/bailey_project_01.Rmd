@@ -1,0 +1,108 @@
+---
+title: "Mini Project 1 Analysis"
+author: "Katelyn Bailey"
+output: html_document
+date: "2025-05-31"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+
+birth <- read_csv("us_births_00_14.csv")
+
+# check head, missing values, and data structure 
+head(birth)
+sum(is.na(birth))
+str(birth)
+```
+
+```{r}
+# most popular birthday every month of every year 
+birth %>% group_by(year, month) %>% filter(births == max(births)) 
+# most popular birthdays 
+birth %>% group_by(month, date_of_month) %>% summarise(birthday = sum(births)) %>% arrange(desc(birthday)) 
+# births by day of week 
+birth %>% group_by(day_of_week) %>% summarise(total_births_bydw = sum(births)) %>% arrange(desc(total_births_bydw))
+# births by month 
+birth %>% group_by(month) %>% summarise(total_births_bym = sum(births)) %>% arrange(desc(total_births_bym))
+# births by year 
+birth %>% group_by(year) %>% summarise(total_births_byy = sum(births)) %>% arrange(desc(total_births_byy))
+```
+
+> Fun facts: 
+- The day I was born is the most popular birthday in April of 2002! My birthday is also the most popular in April of 2013. 
+- Valentine's day was the most popular birthday in Feburary of 2001, 2002, 2003, 2006, 2008, 2012, and 2013. 
+- 13/15 of the most popular November birthdays fell between the 20th and the 26th -- all on the Tuesday before thanksgiving!!
+- The most popular day to be born is September 12th.
+- Valentine's is the 48th most popular day to be born and the 1st most popular birthday in the first half of the year. 
+- The least number of people are born on leap day, totalling 41869 for this time period. 
+- Tuesday is the most popular day of the week and August is the most popular month. 
+
+```{r}
+birth %>% group_by(day_of_week) %>% summarise(total_births = sum(births)) %>% 
+  mutate(day = factor(day_of_week, levels = c("Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"))) %>% 
+  ggplot(aes(x = day, y = total_births/1000000, fill = day)) + geom_col() + 
+  labs(title = "Total Births by Day of the Week", x = "", y = "Total Births (Millions)", caption = "Source: US births 2000-2014") +
+  theme_minimal() + theme(legend.position = "none")
+```
+
+> Suday is the least popular day, with Saturday-Monday being less than Tuesday-Friday, and Tuesday being the most popular day. 
+
+```{r}
+birth %>% group_by(month) %>% summarise(total_births = sum(births)) %>% 
+  mutate(month = factor(month, levels = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"))) %>% 
+  ggplot(aes(x = month, y = total_births/1000000, fill = month)) + geom_col() + 
+  labs(title = "Total Births by Month", x = "", y = "Total Births (Millions)", caption = "Source: US births 2000-2014") +
+  theme_minimal() + theme(legend.position = "none")
+```
+
+> A decrease in births in early spring and an increase in births in late summer/early fall. Low: Feburary; High: August 
+
+```{r}
+birth %>% group_by(month, day_of_week) %>% summarise(total_births = sum(births)) %>%
+  mutate(month = factor(month, levels = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec")),
+         day_of_week = factor(day_of_week, levels = c("Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"))) %>%
+  ggplot(aes(x = month, y = total_births/1000000, fill = day_of_week)) + geom_bar(stat = "identity", position = "fill") + 
+  labs(title = "Proportion of Births on Days of the Week by Month", y = "", x = "", fill = "", caption = "Source: US births 2000-2014") + 
+  theme_minimal() + theme(legend.position = "right")
+```
+
+```{r}
+ggplot(birth, aes(x = date, y = births)) +
+  geom_point(color = "hotpink", alpha = .2) +
+  labs(title = "Daily Births Over Time", x = "", y = "", caption = "Source: US births 2000-2014") +
+  theme_minimal()
+```
+
+```{r}
+birth %>% mutate(day_of_year = yday(date)) %>% group_by(date, year, day_of_year) %>%
+  summarise(total_births = sum(births), .groups = "drop") %>% 
+  ggplot(aes(x = day_of_year, y = total_births)) + geom_point(alpha = 0.2, color = "gray50") +
+  geom_smooth(method = "loess", span = 0.1, color = "hotpink", se = FALSE) +
+  facet_wrap(~ year) + labs(title = "Smoothed Time Trends of Daily Births by Year", caption = "Source: US births 2000-2014",
+    x = "", y = "") + theme_minimal() 
+```
+
+```{r}
+birth %>% group_by(month, day_of_week) %>% summarise(total_births = sum(births), .groups = "drop") %>%
+  mutate(month = factor(month, levels = 1:12, labels = c("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec")), 
+         day_of_week = factor(day_of_week, levels = c("Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"))) %>% 
+  ggplot(aes(x = month, y = day_of_week)) +
+  geom_point(aes(size = total_births, fill = total_births), shape = 21) +
+  scale_size_continuous(range = c(2, 12), name = "Total Births", ) +  
+  scale_fill_gradientn(colors = c("#fff0f5", "pink", "hotpink", "darkmagenta"), name = "", 
+                       guide = guide_colorbar(reverse = TRUE,  barheight = unit(125, "pt"))) + 
+  labs(title = "Births by Month and Day of the Week", subtitle = "Colored and Sized by Total Births", x = "", y = "") +
+  theme_minimal() + theme(legend.position = "right", legend.box = "horizontal")
+```
+
+> Least popular month and day combination being Sundays in February and the most favorable combinations being Tuesdays-Thursdays in July-September. 
+By the horizontal patterns, Saturdays and Sundays have considerably less than the weekdays with Mondays following behind them. 
+By the vertical patterns, seasonal patterns with higher births in July to September

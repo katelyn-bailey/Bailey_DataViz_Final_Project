@@ -1,0 +1,119 @@
+---
+title: "Data Visualization - Mini-Project 2"
+author: "Katelyn Bailey `kbailey0133@floridapoly.edu`"
+output: 
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+library(leaflet)
+library(broom)
+
+fifa <- read_csv("fifa18.csv")
+
+head(fifa)
+sum(is.na(fifa))
+str(fifa)
+```
+
+```{r}
+top_nat <- fifa %>% group_by(nationality) %>%
+  summarise(num_players = n()) %>% arrange(desc(num_players)) %>% slice(1:10)
+top_nat
+
+top_nat_stats <- fifa %>% filter(nationality %in% top_nat$nationality) %>%
+  group_by(nationality) %>% summarise(avg_overall = mean(overall), avg_potential = 
+                                        mean(potential), avg_age = mean(age)) %>% 
+  arrange(desc(avg_overall))
+top_nat_stats
+```
+
+> England is the most represented nationality with Germany, Spain, France, and Argentina among the top five. Brazil is the nationality with the highest overall average. Note, that Brazil also has the highest average age of these top 10 nationalities. England has the lowest average age, which could be related to them having the most number of players. 
+
+```{r}
+fifa_plot <- fifa %>% 
+  ggplot(aes(x = age, y = potential, color = overall, text = paste("Name:", name, "<br>Club:", club))) + 
+  geom_point(size = 2, alpha = 0.7) + scale_color_gradientn(colors = c("#ffe6f0", "#ffb3d9", "#ff80bf", "#ff4da6")) +
+  labs(title = "Age against Player Potential (Colored by Overall Rating)",
+       x = "Age", y = "Potential", color = "Overall Rating") + theme_minimal()
+
+interactive_plot <- ggplotly(fifa_plot, tooltip = "text")
+interactive_plot
+
+htmlwidgets::saveWidget(interactive_plot, "fancy_fifa_plot.html")
+```
+
+
+```{r}
+library(sf)
+world_shapes <- read_sf("ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp")
+world_shapes <- filter(world_shapes, ISO_A3 != "ATA")
+world_shapes
+
+sort(unique(world_shapes$NAME))
+sort(unique(fifa$nationality))
+fifa <- fifa %>% mutate(nationality = recode(nationality,
+    "Bosnia Herzegovina" = "Bosnia and Herz.",
+    "Brunei Darussalam" = "Brunei",
+    "China PR" = "China",
+    "DR Congo" = "Dem. Rep. Congo",
+    "Czech Republic" = "Czechia",
+    "Equatorial Guinea" = "Eq. Guinea",
+    "FYR Macedonia" = "Macedonia",
+    "Guinea Bissau" = "Guinea-Bissau",
+    "Ivory Coast" = "Côte d'Ivoire",
+    "Korea DPR" = "North Korea",
+    "Korea Republic" = "South Korea",
+    "Republic of Ireland" = "Ireland",
+    "Swaziland" = "eSwatini",
+    "Trinidad & Tobago" = "Trinidad and Tobago",
+    "United States" = "United States of America",
+    "England" = "United Kingdom",
+    "Scotland" = "United Kingdom",
+    "Wales" = "United Kingdom",
+    "Northern Ireland" = "United Kingdom"
+  ))
+
+country_counts <- fifa %>% group_by(nationality) %>% summarise(count = n())
+world_fifa1 <- world_shapes %>% left_join(country_counts, by = c("NAME" = "nationality"))
+
+fifa_counts_map <- ggplot() + geom_sf(data = world_fifa1, aes(fill = count), color = "gray", size = 0.15) +
+  scale_fill_gradientn(colors = c("#ffe6f0", "#ffb3d9", "#ff80bf", "#ff4da6"), na.value = "gray90") +
+  labs(title = "FIFA18 Player Counts by Country", fill = "Number of Players",
+       caption = "Source: FIFA18 player data, Shapefile: Natural Earth") +
+  theme_void() + theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5, face = "bold"))
+fifa_counts_map
+
+country_overall <- fifa %>% group_by(nationality) %>% summarise(avg_overall = mean(overall))
+world_fifa2 <- world_shapes %>% left_join(country_overall, by = c("NAME" = "nationality"))
+
+fifa_overall_map <- ggplot() + geom_sf(data = world_fifa2, aes(fill = avg_overall), color = "gray", size = 0.15) +
+  scale_fill_gradientn(colors = c("#ffe6f0", "#ffb3d9", "#ff80bf", "#ff4da6"), na.value = "gray90") +
+  labs(title = "FIFA18 Average Overall by Country", fill = "Average Overall",
+       caption = "Source: FIFA18 player data, Shapefile: Natural Earth") +
+  theme_void() + theme(legend.position = "bottom", plot.title = element_text(hjust = 0.5, face = "bold"))
+fifa_overall_map
+```
+
+```{r}
+model <- lm(overall ~ age + potential + strength + sprint_speed, data = fifa)
+model_df <- tidy(model) %>% filter(term != "(Intercept)")
+
+ggplot(model_df, aes(x = reorder(term, estimate), y = estimate)) +
+  geom_col(fill = "#ffb3d9") +
+  geom_text(aes(label = round(estimate, 2)), vjust = -0.5, size = 3.5) +
+  theme_minimal() +
+  labs(title = "Linear Model Coefficients for Player Overall Rating",
+       x = "Model Term", y = "Estimate") +
+  coord_flip()
+```
+
+> An increase in any of these variables is associated with an increase in overall rating. This shows that age and potential are a strong indicator of overall rating. Older players have higher overall ratings. A one point increase in potential will increase the overall rating by 0.89 points. Sprint speed and strength have much smaller effects on the overall rating. This shows their expected potential and the experience of a player is more important than their physical abilities like strength and speed.  

@@ -1,0 +1,14 @@
+# Data Visualization 
+
+> Katelyn Bailey 
+
+## Mini-Project 2
+The goal of this analysis was to explore player attributes in the FIFA18 dataset. Using tools from the tidyverse, ggplot2, and plotly libraries, I aimed to uncover patterns in how age, potential, and physical traits influence player ratings, while also highlighting national trends in player distribution across the world.
+
+The FIFA18 dataset contains detailed information on thousands of professional soccer players, including attributes like age, nationality, sprint speed, strength, potential, and overall rating. This data gave me an opportunity to explore a mix of numeric, categorical, and geographic variables. I wanted to better understand what traits impact a player's rating and which countries have the most players represented in the game.
+
+I originally planned to do the three charts I decided on: interactive scatterplot, world map, and the linear model coefficient graph. I looked for missing values and recoded nationality names to match country names in the Natural Earth shapefile. The naming conventions between fifa's nationality column and world shape name were inconsistent, so it showed a lot of missing countries without the recoding. One of the main difficulties was recoding the country names between the shapefile and the FIFA dataset. There were subtle differences that made it easy to miss matches, and the join initially returned a lot of missing values. Another challenge was making sure the plots stayed intuitive and visually consistent. I reused a custom pink color palette across all charts for cohesion and opted for a minimal theme to reduce visual clutter.
+
+The world map tells a clear story of European dominance, especially from the United Kingdom, Germany, Spain, and France. South American countries like Brazil and Argentina also rank highly, while many African and Asian countries have fewer players represented. This reflects real-world talent and regional investment in professional soccer. The linear model plot shows that age and potential are the strongest predictors of overall rating, with much smaller contributions from strength and sprint speed. This supports the idea that experience and future expectations weigh more in player ratings than just raw physical traits.
+
+I used a consistent pastel pink color scale that I customized across all visualizations, aligning the aesthetic and keeping it visually soft but readable. All charts use a minimal theme to reduce noise. Axes and labels were only included when they added meaning. Interactive elements were used when exploration helped tell the story better like in the scatterplot of age against potential ratings. It's very convenient to be able to roll over a data point and see which player it represents without any further coding. In the future, I would also explore how different clubs compare or analyze player wages and positions for deeper insights.
